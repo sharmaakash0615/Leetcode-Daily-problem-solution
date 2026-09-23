@@ -53,21 +53,13 @@ class Solution {
     private:
     bool dfsMulti(int start,vector<int>& vis,vector<vector<int>>& graph,int prev)
     {
-        if(start==0)
-        {
-          vis[start]=prev;
-          prev=vis[start];
-        }
-        else{
-            vis[start]=!prev;
-            prev=vis[start];
-        }
+      vis[start]=prev;
      
     for(auto it:graph[start])
     {
         if(vis[it]==-1)
         {
-        if(dfsMulti(it,vis,graph,prev)==false)
+        if(dfsMulti(it,vis,graph,!prev)==false)
           return false;
         }
         else if(vis[it]==vis[start])
