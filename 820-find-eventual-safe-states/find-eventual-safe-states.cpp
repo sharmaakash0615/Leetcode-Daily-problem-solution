@@ -1,56 +1,49 @@
 class Solution {
-    private:
-    bool dfs(int node,vector<int>& vis,vector<int>& pathvis,vector<int>& check,vector<vector<int>>& graph)
-    {
-        vis[node]=1;
-        pathvis[node]=1;
-        check[node]=0;
-        for(auto it:graph[node])
-        {
-            if(!vis[it])
-            {
-              
-                if(dfs(it,vis,pathvis,check,graph)==true)
-                {
-                    check[node]=0;
-                    return true;
-                }
-            }
-                else if(pathvis[it])
-                {
-                      check[node]=0;
-                      return true;
-                }
-            
-           
-        }
-       
-             check[node]=1;
-            pathvis[node]=0;
-        return false;
-    }
 public:
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
-    int n=graph.size();
-    vector<int>vis(n,0);
-    vector<int>pathvis(n,0);
-    vector<int>safenode;
-    vector<int>check(n,0);
-    for(int i=0;i<n;i++)
-    {
-        if(!vis[i])
+      int n=graph.size();
+      vector<vector<int>>revgraph(n);
+      for(int i=0;i<n;i++)  
+      {
+        for(auto it:graph[i])
         {
-            dfs(i,vis,pathvis,check,graph);
+          revgraph[it].push_back(i);
         }
-    }
-     for(int i=0;i<n;i++)
-     {
-        if(check[i]==1)
+      } 
+      vector<int>indegree(n,0);
+      for(int i=0;i<n;i++)  
+      {
+        for(auto it: revgraph[i])
         {
-          safenode.push_back(i); 
+            indegree[it]++;
         }
-     }
+      } 
+     queue<int>q;
+      for(int i=0;i<n;i++)
+      {
+        if( indegree[i]==0)
+        {
+            q.push(i);
+        }
+      }
+      vector<int>safenode;
+      while(!q.empty())
+      {
+        int node=q.front();
+        q.pop();
+        safenode.push_back(node);
+        for(auto it: revgraph[node])
+        {
+            indegree[it]--; 
+            if( indegree[it]==0)
+           {
+               q.push(it);
+            }
+        }
+      }
 
-     return safenode;
+      sort(safenode.begin(),safenode.end());
+
+      return safenode;
     }
 };
